@@ -359,6 +359,7 @@ server <- function(input, output, session) {
         Chr_Mark_Num <- as.numeric(Chr_Mark_Num)
         # Determine whether chromosomes exist
         if(Chr_Mark_Num==0){
+          Chr_Mark_Matr[i,i] <- NA
           next
         }else{
           Chr_Mark_Matr[i,i] <- Chr_Mark_Num
@@ -379,13 +380,13 @@ server <- function(input, output, session) {
       print(paste0(froot,' takes ',time,' seconds to finish the decomposition of me.'))
       
       for(i in 1:input$autosome){
-        if(Chr_Mark_Matr[i,i]==0){
+        if(Chr_Mark_Matr[i,i]==NA){
           next
         }else{
           SNP1=as.numeric(Chr_Mark_Matr[i,i])
           offDiag1 = offDiag_Matr[,i]
           for(j in 1:input$autosome){
-            if(Chr_Mark_Matr[j,j]==0){
+            if(Chr_Mark_Matr[j,j]==NA){
               next
             }else{
               if(i<j){
