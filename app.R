@@ -380,13 +380,13 @@ server <- function(input, output, session) {
       print(paste0(froot,' takes ',time,' seconds to finish the decomposition of me.'))
       
       for(i in 1:input$autosome){
-        if(Chr_Mark_Matr[i,i]==NA){
+        if(is.na(Chr_Mark_Matr[i,i])){
           next
         }else{
           SNP1=as.numeric(Chr_Mark_Matr[i,i])
           offDiag1 = offDiag_Matr[,i]
           for(j in 1:input$autosome){
-            if(Chr_Mark_Matr[j,j]==NA){
+            if(is.na(Chr_Mark_Matr[j,j])){
               next
             }else{
               if(i<j){
