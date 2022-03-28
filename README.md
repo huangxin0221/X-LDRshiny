@@ -27,13 +27,12 @@ runApp()
 ~~~
 For some of the **linux OS without displays**, LAN remote access can be used for the X-LD Shiny.
 ~~~
-# This is an R console
+# This is an R console for linux
 
 # Assume your linux IP is 100.100.100.1, and port 1234 is accessible
 library(shiny)
 runApp(host='100.100.100.1',port=1234)
 # X-LD is then availble at computer in LAN, by visit 100.100.100.1:1234 in the browser.
-
 
 # The way to open the specific port (for example 1234) in linux:
 # This is a linux bash/terminal
@@ -50,9 +49,14 @@ firewall-cmd --zone=public --add-port=1234/tcp --permanent
 # --permanent: set options permanently, a change will only be part of the runtime configuration without this option
 
 # reload firewall configuration
-firewall-cmd --reload
-
+firewall-cmd --reload 
 ~~~
+~~~
+# This is your own computer. Then enter the following address in your browser.
+# Assume your linux IP is 100.100.100.1, and port 1234 is accessible
+http://100.100.100.1:1234
+~~~
+
 ### Some possible errors and their solutions 
 ~~~
 Error in utils::download.file(url, method = method, ...) : 
