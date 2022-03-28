@@ -352,11 +352,11 @@ server <- function(input, output, session) {
       incProgress(1/n, detail = paste0(" making grm and calculate chromosome level LD ..."))
       sc=ifelse(input$bred == 'inbred', 2, 1)
       offDiag_Matr <- data.frame(matrix(NA,nrow=nn*(nn-1)/2,ncol=input$autosome))
-      
+      bimfile <- read.table(paste0(froot, ".fam"), as.is = T, header = F, colClasses = c("character","NULL","NULL","NULL","NULL","NULL"))
       for(i in 1:input$autosome){
-        Chr_Mark_Num_cmd = paste0("cat ",froot,".bim | grep -w '^",i,"' | wc -l")
-        Chr_Mark_Num = system(Chr_Mark_Num_cmd,intern = TRUE)
-        Chr_Mark_Num <- as.numeric(Chr_Mark_Num)
+        #Chr_Mark_Num_cmd = paste0("cat ",froot,".bim | grep -w '^",i,"' | wc -l")
+        #Chr_Mark_Num = system(Chr_Mark_Num_cmd,intern = TRUE)
+        Chr_Mark_Num <- as.numeric(length(which(bimfile[,1]==i)))
         # Determine whether chromosomes exist
         if(Chr_Mark_Num==0){
           Chr_Mark_Matr[i,i] <- NA
