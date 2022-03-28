@@ -233,7 +233,7 @@ ui <- fluidPage(
           tags$p(HTML("<a href=\"https://github.com/huangxin0221/X-LDRshiny\" target=\"_blank\">GitHub repository: X-LDRshiny.</a>")),
           tags$br(),
           tags$h3("Citation"),
-          tags$p(HTML("<a>Xin Huang et al, X-LD: a fast and effective algorithm for estimating inter-chromosomal linkage disequilibrium (Under review).</a>")),
+          tags$p(HTML("<a>Xin Huang et al, Scalable computing for LD spectra across species (Under review).</a>")),
           tags$br(),
           tags$p(HTML(paste("Git version:", gTag[1,1])))
       
@@ -289,7 +289,7 @@ server <- function(input, output, session) {
             
       incProgress(1/3, detail = paste0(" check chromosome ..."))
       froot = substr(input$file_input$datapath[idx], 1, nchar(input$file_input$datapath[idx])-4)
-      get_chr = read.table(paste0(froot,'.bim'),header=F,colClasses = c("character","NULL","NULL","NULL","NULL","NULL"))
+      get_chr = read.table(paste0(froot,".bim"),header=F,colClasses = c("character","NULL","NULL","NULL","NULL","NULL"))
       if (length(which(is.na(as.numeric(get_chr[,1]))))>0){
         showNotification("The chromosome index in the .bim file must be numeric!", duration = 5, type="error")
         stop("The chromosome index in the .bim file must be numeric! Refresh to continue.")
@@ -335,10 +335,10 @@ server <- function(input, output, session) {
       incProgress(1/1, detail = paste0(" collecting information ..."))
       
       nn<-nrow(read.table(paste0(froot, ".fam"), as.is = T, header = F, colClasses = c("character","NULL","NULL","NULL","NULL","NULL")))
-      mm<-nrow(read.table(paste0(froot,'.bim'), as.is = T, header=F, colClasses = c("character","NULL","NULL","NULL","NULL","NULL")))
+      mm<-nrow(read.table(paste0(froot,".bim"), as.is = T, header=F, colClasses = c("character","NULL","NULL","NULL","NULL","NULL")))
     })
     
-    withProgress(message="EigenGWAS:", value=0, {
+    withProgress(message="X-LD:", value=0, {
       time1 = proc.time()
       n = 4
       Chr_Me_Matr <- data.frame(matrix(NA,nrow=input$autosome,ncol=input$autosome))
