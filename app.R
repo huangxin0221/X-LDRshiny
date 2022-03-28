@@ -1,10 +1,12 @@
 # Load packages ----
 conf=read.table("X-LD.conf", as.is = T)
+
 # install.packages(c("shiny","bsplus","RColorBrewer","corrplot"))
 library(shiny)
 library(bsplus)
 library(reshape2)
 library(ggplot2)
+Sys.setenv(LANG="en")
 unzip = "unzip -o -q plink.zip"
  
 if(length(grep("linux",sessionInfo()$platform, ignore.case = TRUE))>0) {
@@ -24,8 +26,11 @@ if(length(grep("linux",sessionInfo()$platform, ignore.case = TRUE))>0) {
   system("chmod a+x ./plink/plink_win.exe")
   plink2 = "./plink/plink_win.exe"
 }
+
+
 options(shiny.maxRequestSize=conf[1,2]*1024^2, shiny.launch.browser=T)
 gTag=read.table("gitTag.txt")
+
 # Define UI for X-LD Application
 ui <- fluidPage(
         theme = "style.css",
@@ -228,14 +233,16 @@ ui <- fluidPage(
           tags$p(HTML("<a href=\"https://github.com/huangxin0221/X-LDRshiny\" target=\"_blank\">GitHub repository: X-LDRshiny.</a>")),
           tags$br(),
           tags$h3("Citation"),
-          tags$p(HTML("<a>Xin Huang et al, X-LD: a fast and effective algorithm for estimating inter-chromosomal linkage disequilibrium (Under review).</a>")),
+          tags$p(HTML("<a>Xin Huang et al, Scalable computing for LD spectra across species (Under review).</a>")),
           tags$br(),
           tags$p(HTML(paste("Git version:", gTag[1,1])))
       
         )
       )
 )
+
 # Define server logic required to draw a histogram
+
 server <- function(input, output, session) {
   # Plot on the web
   currentFile <- reactive({
@@ -312,6 +319,7 @@ server <- function(input, output, session) {
         
         frootCore = paste0(froot,".3.core")
       }
+
       return (frootCore)
     })
   })
@@ -330,7 +338,7 @@ server <- function(input, output, session) {
       mm<-nrow(read.table(paste0(froot,'.bim'), as.is = T, header=F, colClasses = c("character","NULL","NULL","NULL","NULL","NULL")))
     })
     
-    withProgress(message="EigenGWAS:", value=0, {
+    withProgress(message="X-LD:", value=0, {
       time1 = proc.time()
       n = 4
       Chr_Me_Matr <- data.frame(matrix(NA,nrow=input$autosome,ncol=input$autosome))
@@ -345,9 +353,11 @@ server <- function(input, output, session) {
       sc=ifelse(input$bred == 'inbred', 2, 1)
       offDiag_Matr <- data.frame(matrix(NA,nrow=nn*(nn-1)/2,ncol=input$autosome))
       
+      bimfile <- read.table(paste0(froot, ".bim"), as.is = T, header = F, colClasses = c("character","NULL","NULL","NULL","NULL","NULL"))
       for(i in 1:input$autosome){
-        Chr_Mark_Num_cmd = paste0("cat ",froot,".bim | grep -w '^",i,"' | wc -l")
-        Chr_Mark_Num = system(Chr_Mark_Num_cmd,intern = TRUE)
+        #Chr_Mark_Num_cmd = paste0("cat ",froot,".bim | grep -w '^",i,"' | wc -l")
+        #Chr_Mark_Num = system(Chr_Mark_Num_cmd,intern = TRUE)
+        Chr_Mark_Num <- length(which(bimfile[,1]==i))
         Chr_Mark_Num <- as.numeric(Chr_Mark_Num)
         # Determine whether chromosomes exist
         if(Chr_Mark_Num==0){
@@ -370,15 +380,15 @@ server <- function(input, output, session) {
       time2 = proc.time()
       time = (time2-time1)[3][[1]]
       print(paste0(froot,' takes ',time,' seconds to finish the decomposition of me.'))
-
+      
       for(i in 1:input$autosome){
-        if(Chr_Mark_Matr[i,i]==NA){
+        if(is.na(Chr_Mark_Matr[i,i])){
           next
         }else{
           SNP1=as.numeric(Chr_Mark_Matr[i,i])
           offDiag1 = offDiag_Matr[,i]
           for(j in 1:input$autosome){
-            if(Chr_Mark_Matr[j,j]==NA){
+            if(is.na(Chr_Mark_Matr[j,j])){
               next
             }else{
               if(i<j){
