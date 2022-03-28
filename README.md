@@ -8,7 +8,7 @@ For **Windows users**, please **run R studio as an administrator**.
 ~~~
 # This is an R console
 # 1. First, make sure the following R packages are installed before running
-install.packages(c("shiny","bsplus","ggplot2","reshape2"))
+install.packages(c("shiny","bsplus","ggplot2","reshape2","zip"))
 # 2. Then, you can run it directly at you RStudio, if you have shiny package installed.
 library(shiny)
 runGitHub("X-LDRshiny", "huangxin0221")

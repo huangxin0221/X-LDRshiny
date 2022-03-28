@@ -8,20 +8,21 @@ library(reshape2)
 library(ggplot2)
 library(zip)
 
-unzip("plink.zip",overwrite=T) 
+source('helper.R')
+unzip("plink2.zip",overwrite=T) 
 if(length(grep("linux",sessionInfo()$platform, ignore.case = TRUE))>0) {
   print("linux")
-  system("chmod a+x ./plink/plink_linux")
-  plink2 = "./plink/plink_linux"
+  system("chmod a+x ./plink_linux")
+  plink2 = "./plink2_linux"
 } else if(length(grep("apple",sessionInfo()$platform, ignore.case = TRUE))>0) {
   print("apple")
-  system("chmod a+x ./plink/plink_mac")
-  plink2 = "./plink/plink_mac"
+  system("chmod a+x ./plink2_mac")
+  plink2 = "./plink2_mac"
   #system("git rev-list head --max-count 1 > gitTag.txt")
 } else {
   print("windows")
-  system("chmod a+x ./plink/plink_win.exe")
-  plink2 = "./plink/plink_win.exe"
+  system("chmod a+x ./plink2_win.exe")
+  plink2 = "./plink2_win.exe"
 }
 
 
@@ -128,7 +129,7 @@ ui <- fluidPage(
                       title = "A proprotion of the whole genome markers are sampled for X-LD analysis", content = "", placement = "right"
                     )
                 )
-            ),            
+            )            
             
           ),
           hr(),
@@ -363,13 +364,14 @@ server <- function(input, output, session) {
         }else{
           Chr_Mark_Matr[i,i] <- Chr_Mark_Num
           incProgress(2/n, detail = paste0(" making grm for chromosome ",i ," ..."))
-          GRM_cmd = paste0(plink2, " --bfile ",froot," --chr ",i," --chr-set 90 --allow-extra-chr --allow-no-sex --make-grm-gz --out ",froot,".chr",i)
+          GRM_cmd = paste0(plink2, " --bfile ",froot," --chr ",i," --chr-set 90 --allow-extra-chr --allow-no-sex --make-grm-bin --out ",froot,".chr",i)
           system(GRM_cmd)
-          gz=gzfile(paste0(froot,".chr",i, ".grm.gz"))
-          grm=read.table(gz, as.is = T)
-          offDiag_Matr[,i] = grm[grm[,1]!=grm[,2], 4]/sc
-          offDiag_2 = (grm[grm[,1]!=grm[,2], 4]/sc)^2
-          Me=1/mean(offDiag_2,na.rm=TRUE)
+          gz=paste0(froot,".chr",i)
+          grm=ReadGRMBin(gz)
+          off_diagnol = grm$off
+          offDiag_Matr[,i] = off_diagnol/sc
+          off_diagnol_2 = (off_diagnol/sc)^2
+          Me=1/mean(off_diagnol_2,na.rm=TRUE)
           Chr_Me_Matr[i,i] <- as.numeric(Me)
         }
         
