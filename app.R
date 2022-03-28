@@ -12,7 +12,7 @@ source('helper.R')
 unzip("plink2.zip",overwrite=T) 
 if(length(grep("linux",sessionInfo()$platform, ignore.case = TRUE))>0) {
   print("linux")
-  system("chmod a+x ./plink_linux")
+  system("chmod a+x ./plink2_linux")
   plink2 = "./plink2_linux"
 } else if(length(grep("apple",sessionInfo()$platform, ignore.case = TRUE))>0) {
   print("apple")
