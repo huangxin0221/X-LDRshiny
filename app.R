@@ -6,23 +6,20 @@ library(shiny)
 library(bsplus)
 library(reshape2)
 library(ggplot2)
-Sys.setenv(LANG="en")
-unzip = "unzip -o -q plink.zip"
- 
+library(zip)
+
+unzip("plink.zip",overwrite=T) 
 if(length(grep("linux",sessionInfo()$platform, ignore.case = TRUE))>0) {
   print("linux")
-  system(paste0(unzip))
   system("chmod a+x ./plink/plink_linux")
   plink2 = "./plink/plink_linux"
 } else if(length(grep("apple",sessionInfo()$platform, ignore.case = TRUE))>0) {
   print("apple")
-  system(paste0(unzip))
   system("chmod a+x ./plink/plink_mac")
   plink2 = "./plink/plink_mac"
   #system("git rev-list head --max-count 1 > gitTag.txt")
 } else {
   print("windows")
-  system(paste0(unzip))
   system("chmod a+x ./plink/plink_win.exe")
   plink2 = "./plink/plink_win.exe"
 }
